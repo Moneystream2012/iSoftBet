@@ -14,7 +14,7 @@ $ php bin/console doctrine:migration:migrate
 $ php bin/console doctrine:fixtures:load
 ```
 
-On MacOS, also update your `/etc/hosts` file with:
+Update your `/etc/hosts` file with:
 
 ```
 127.0.0.1   app.localhost
@@ -24,5 +24,5 @@ On MacOS, also update your `/etc/hosts` file with:
 You may now go to [http://app.localhost/](http://app.localhost/) and
 login using the following credentials:
 
-Login: `foo`
-Password: `bar`
+Login: `admin`
+Password: `admin`
