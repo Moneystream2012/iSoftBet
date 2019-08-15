@@ -1,0 +1,229 @@
+<template>
+    <div>
+      <div class="login-container">
+        <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px"
+                 class="card-box login-form">
+            <h3 class="title">Please login into:</h3>
+            <el-form-item prop="username">
+                <span class="svg-container svg-container_login">
+                  <i class="fas fa-user"></i>
+                </span>
+                <el-input name="username"
+                          type="text"
+                          v-model="loginForm.login"
+                          autoComplete="on"
+                          placeholder="login"
+                />
+            </el-form-item>
+            <el-form-item prop="password">
+                <span class="svg-container">
+                  <i class="fas fa-key"></i>
+                </span>
+                <el-input name="password"
+                          :type="pwdType"
+                          @keyup.enter.native="handleLogin"
+                          v-model="loginForm.password"
+                          autoComplete="on"
+                          placeholder="password"
+                />
+                <span class="show-pwd" @click="showPwd"><i class="fas fa-eye"></i></span>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" style="width:100%;" :loading="loading" :disabled="loginForm.login.length === 0 || loginForm.password.length === 0 || isLoading" @click.native.prevent="handleLogin">
+                    Sign in
+                </el-button>
+            </el-form-item>
+            <div class="tips">
+                <span style="margin-right:20px;">username: admin</span>
+                <span> password: admin</span>
+            </div>
+        </el-form>
+      </div>
+      <div v-if="isLoading" class="row col">
+          <p>Loading...</p>
+      </div>
+
+      <div v-else-if="hasError" class="row col">
+          <error-message :error="error"></error-message>
+      </div>
+    </div>
+</template>
+
+<script>
+    import ErrorMessage from '../components/ErrorMessage';
+
+    export default {
+        name: 'login',
+        components: {
+            ErrorMessage,
+        },
+        data() {
+            const validateUsername = (rule, value, callback) => {
+                if (value.length < 1) {
+                    callback(new Error('Username is required'))
+                } else {
+                    callback()
+                }
+            };
+            const validatePass = (rule, value, callback) => {
+                if (value.length < 5) {
+                    callback(new Error('The password can not be less than 5 digits'))
+                } else {
+                    callback()
+                }
+            };
+            return {
+                loginForm: {
+                    login: 'admin',
+                    password: 'admin'
+                },
+                loginRules: {
+                    login: [{ required: true, trigger: 'blur', validator: validateUsername }],
+                    password: [{ required: true, trigger: 'blur', validator: validatePass }]
+                },
+                loading: false,
+                pwdType: 'password'
+            }
+        },
+        computed: {
+            isLoading () {
+                return this.$store.getters['security/isLoading'];
+            },
+            hasError () {
+                return this.$store.getters['security/hasError'];
+            },
+            error () {
+                return this.$store.getters['security/error'];
+            },
+        },
+        created() {
+            let redirect = this.$route.query.redirect;
+
+            if (this.$store.getters['security/isAuthenticated']) {
+                if (typeof redirect !== 'undefined') {
+                    this.$router.push({path: redirect});
+                } else {
+                    this.$router.push({path: '/home'});
+                }
+            }
+        },
+        methods: {
+            showPwd() {
+                if (this.pwdType === 'password') {
+                    this.pwdType = ''
+                } else {
+                    this.pwdType = 'password'
+                }
+            },
+
+            handleLogin() {
+                this.$refs.loginForm.validate(async (valid) => {
+                    if (valid === false) {
+                        console.log('error submit!!');
+                        return false;
+                    }
+
+                    this.loading = true;
+                    let redirect = this.$route.query.redirect;
+
+                    try {
+                        await this.$store.dispatch('security/login', this.loginForm);
+                        this.loading = false;
+
+                        if (!this.$store.getters['security/hasError']) {
+                            if (typeof redirect !== 'undefined') {
+                                this.$router.push({path: redirect});
+                            } else {
+                                this.$router.push({path: '/home'});
+                            }
+                        }
+                    } catch (error) {
+                        this.loading = false;
+                    }
+                })
+            }
+        }
+    }
+</script>
+
+<style rel="stylesheet/scss" lang="scss">
+    $bg:#2d3a4b;
+    $dark_gray:#889aa4;
+    $light_gray:#eee;
+
+    .login-container {
+        position: fixed;
+        height: 100%;
+        width:100%;
+        background-color: $bg;
+        input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0px 1000px #293444 inset !important;
+            -webkit-text-fill-color: #fff !important;
+        }
+        input {
+            background: transparent;
+            border: 0px;
+            -webkit-appearance: none;
+            border-radius: 0px;
+            padding: 12px 5px 12px 15px;
+            color: $light_gray;
+            height: 47px;
+        }
+        .el-input {
+            display: inline-block;
+            height: 47px;
+            width: 85%;
+        }
+        .tips {
+            font-size: 14px;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .svg-container {
+            padding: 6px 5px 6px 15px;
+            color: $dark_gray;
+            vertical-align: middle;
+            width: 30px;
+            display: inline-block;
+            &_login {
+                font-size: 20px;
+            }
+        }
+        .title {
+            font-size: 26px;
+            font-weight: 400;
+            color: $light_gray;
+            margin: 0px auto 40px auto;
+            text-align: center;
+            font-weight: bold;
+        }
+        .login-form {
+            position: absolute;
+            left: 0;
+            right: 0;
+            width: 400px;
+            padding: 35px 35px 15px 35px;
+            margin: 120px auto;
+        }
+        .el-form-item {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            color: #454545;
+        }
+        .show-pwd {
+            position: absolute;
+            right: 10px;
+            top: 7px;
+            font-size: 16px;
+            color: $dark_gray;
+            cursor: pointer;
+            user-select:none;
+        }
+        .thirdparty-button{
+            position: absolute;
+            right: 35px;
+            bottom: 28px;
+        }
+    }
+</style>
