@@ -1,0 +1,42 @@
+fos_http_cache:
+    proxy_client:
+        symfony:
+            tags_header: My-Cache-Tags
+            tags_method: TAGPURGE
+            header_length: 1234
+            purge_method: PURGE
+            # for single server installations:
+            # use_kernel_dispatcher: true
+            http:
+                servers:
+                    - 127.0.0.1
+                base_url: app.localhost
+    tags:
+        enabled: true
+    cache_manager:
+        enabled: true
+    cache_control:
+        defaults:
+            overwrite: false
+        rules:
+            # match everything to set defaults
+            # the controls section values are used in a call to Response::setCache();
+            -
+                match:
+                    path: ^/
+                    methods: [GET, HEAD]
+                headers:
+                    cache_control: { public: true, max_age: 60, s_maxage: 60 }
+                    last_modified: "-1 hour"
+                    vary: [X-Accept-Version, Accept-Encoding, Accept-Language]
+                    etag: true
+    invalidation:
+        rules:
+            -
+                match:
+                    attributes:
+                        _route: "createTransaction|putTransaction|deleteTransaction"
+                routes:
+                    getAllTransactionsFiltered: ~
+                    getCustomerTransactions: ~
+                    getTransaction: ~

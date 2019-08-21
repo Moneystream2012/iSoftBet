@@ -1,13 +1,10 @@
 import axios from 'axios';
 
 export default {
-    create (customerData) {
-        return axios.post(
-            '/api/customer/create',
-            customerData
-        );
+    create (data) {
+        return axios.post('/api/customer', data);
     },
     getAll () {
-        return axios.get('/api/customers');
+        return axios.get('/api/customer');
     },
 }

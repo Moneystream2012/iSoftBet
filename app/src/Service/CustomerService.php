@@ -22,6 +22,7 @@ final class CustomerService
     /**
      * @param string $name
      * @param float $cnp
+     *
      * @return Customer
      */
     public function createCustomer(string $name, float $cnp): Customer

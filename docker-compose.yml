@@ -14,6 +14,8 @@ services:
     build:
       context: ./services/redis
     image: vuesf4/redis:latest
+    ports:
+      - "6379:6379"
     volumes:
       - ./services/redis:/data:rw
 
@@ -44,16 +46,16 @@ services:
       - mysql_data:/var/lib/mysql
       - ./services/mysql/utf8mb4.cnf:/etc/mysql/conf.d/utf8mb4.cnf:ro
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:4.7
-    labels:
-      - traefik.enable=true
-      - traefik.backend=phpmyadmin
-      - traefik.frontend.rule=Host:phpadmin.app.localhost
-    environment:
-      PMA_HOST: mysql
-      PMA_USER: homestead
-      PMA_PASSWORD: secret
+#  phpmyadmin:
+#    image: phpmyadmin/phpmyadmin:4.7
+#    labels:
+#      - traefik.enable=true
+#      - traefik.backend=phpmyadmin
+#      - traefik.frontend.rule=Host:phpadmin.app.localhost
+#    environment:
+#      PMA_HOST: mysql
+#      PMA_USER: homestead
+#      PMA_PASSWORD: secret
 
 volumes:
 

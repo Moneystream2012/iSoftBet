@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 /**
  * Class ApiCustomerController
  * @package App\Controller
- * @IsGranted("IS_AUTHENTICATED_FULLY")
+ * @IsGranted("ROLE_ADMIN")
  */
 final class ApiCustomerController extends AbstractController
 {
@@ -35,11 +35,9 @@ final class ApiCustomerController extends AbstractController
     }
 
     /**
-     * @Rest\Post("/api/customer/create", name="createCustomer")
+     * @Rest\Post("/api/customer", name="createCustomer")
      * @param Request $request
      * @return JsonResponse
-     *
-     * @IsGranted("ROLE_ADMIN")
      */
     public function createAction(Request $request): JsonResponse
     {
@@ -48,16 +46,14 @@ final class ApiCustomerController extends AbstractController
             $request->request->get('cnp')
         );
 
-        return new JsonResponse($customer->getId(), 200, [], true);
+        return new JsonResponse($customer->getId(), 201, [], true);
     }
 
     /**
-     * @Rest\Get("/api/customers", name="getAllCustomers")
+     * @Rest\Get("/api/customer", name="getAllCustomers")
      * @return JsonResponse
-     *
-     * @IsGranted("ROLE_ADMIN")
      */
-    public function getAllActions(): JsonResponse
+    public function getAllAction(): JsonResponse
     {
         $customers = $this->customerService->getAll();
         $data = $this->serializer->serialize($customers, 'json');

@@ -50,23 +50,29 @@ export default {
             state.transactions = transactions;
         },
         ['FETCHING_TRANSACTIONS_ERROR'](state, error) {
+
+            console.log( error );
+
             state.isLoading = false;
             state.error = error;
             state.transactions = [];
         },
     },
     actions: {
-        createTransaction ({commit}, message) {
+        createTransaction ({commit}, data) {
             commit('CREATING_TRANSACTION');
-            return TransactionAPI.create(message)
+            return TransactionAPI.create(data)
                 .then(res => commit('CREATING_TRANSACTION_SUCCESS', res.data))
                 .catch(err => commit('CREATING_TRANSACTION_ERROR', err));
         },
         fetchTransactions ({commit}) {
             commit('FETCHING_TRANSACTIONS');
             return TransactionAPI.getAll()
-                .then(res => commit('FETCHING_TRANSACTIONS_SUCCESS', res.data))
-                .catch(err => commit('FETCHING_TRANSACTIONS_ERROR', err));
+                .then(res => commit('FETCHING_TRANSACTIONS_SUCCESS', res.data.inline.resources))
+                .catch(err => {
+                    commit('FETCHING_TRANSACTIONS_ERROR', err);
+                    console.log( err );
+                });
         },
     },
 }

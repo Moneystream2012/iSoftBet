@@ -14,11 +14,11 @@ final class UserFixtures extends Fixture
      */
     public function load(ObjectManager $manager): void
     {
-        $userEntity = new User();
-        $userEntity->setLogin('admin');
-        $userEntity->setPlainPassword('admin');
-        $userEntity->setRoles(['ROLE_ADMIN']);
-        $manager->persist($userEntity);
+        $entity = new User();
+        $entity->setLogin('admin');
+        $entity->setPlainPassword('admin');
+        $entity->setRoles(['ROLE_ADMIN']);
+        $manager->persist($entity);
         $manager->flush();
     }
 }

@@ -12,6 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Transaction
 {
+    const
+        AMOUNT_TO_FLOAT = 0.01,
+        AMOUNT_TO_INT = 100;
+
     /**
      * @var int
      * @ORM\Id
@@ -89,29 +93,29 @@ class Transaction
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getAmount(): int
+    public function getAmount(): float
     {
-        return $this->amount;
+        return sprintf('%01.2f', $this->amount * self::AMOUNT_TO_FLOAT);
     }
 
     /**
-     * @param int $amount
+     * @param float $amount
      * @return self
      */
-    public function setAmount(int $amount): self
+    public function setAmount(float $amount): self
     {
-        $this->amount = $amount;
+        $this->amount = intval($amount * self::AMOUNT_TO_INT);
         return $this;
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getCreated(): \DateTime
+    public function getCreated(): string
     {
-        return $this->created;
+        return date("d.m.Y", $this->created->getTimestamp());
     }
 
     /**

@@ -1,0 +1,6 @@
+######### cron example #########
+# lock-file not needed, just FUI
+# write TotalAmount into DB & TransactionTotal.log
+
+47 23 * * * /usr/bin/flock -xn /var/lock/TransactionTotal.lock -c "/path_to_symfony/app/console TransactionTotal" > /var/log/TransactionTotal.log
+

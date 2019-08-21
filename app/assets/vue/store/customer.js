@@ -56,10 +56,11 @@ export default {
         },
     },
     actions: {
-        createCustomer ({commit}, customerData) {
+        createCustomer ({commit}, data) {
             commit('CREATING_CUSTOMER');
-            return CustomerAPI.create(customerData)
-                .then(res => commit('CREATING_CUSTOMER_SUCCESS', {id: res.data, name: customerData.name, cnp: customerData.cnp}))
+            return CustomerAPI.create(data)
+                .then(res => commit('CREATING_CUSTOMER_SUCCESS',
+                    {id: res.data, name: data.name, cnp: data.cnp}))
                 .catch(err => commit('CREATING_CUSTOMER_ERROR', err));
         },
         fetchCustomers ({commit}) {

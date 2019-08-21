@@ -12,11 +12,7 @@
                         <span class="svg-container svg-container_name">
                           <i class="fas fa-user"></i>
                         </span>
-                        <el-input name="name"
-                                  type="text"
-                                  v-model="customerForm.name"
-                                  autoComplete="off"
-                                  placeholder="Customer name"
+                        <el-input name="name" type="text" v-model="customerForm.name" placeholder="Customer name"
                         />
                     </el-form-item>
 
@@ -24,11 +20,7 @@
                         <span class="svg-container svg-container_cnp">
                           <i class="fas fa-user"></i>
                         </span>
-                        <el-input name="cnp"
-                                  type="text"
-                                  v-model="customerForm.cnp"
-                                  autoComplete="off"
-                                  placeholder="0.00"
+                        <el-input name="cnp" type="text" v-model="customerForm.cnp" placeholder="0.00"
                         />
                     </el-form-item>
 
